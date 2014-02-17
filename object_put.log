@@ -1,0 +1,11 @@
+Feb 15 20:58:54 saio swift_proxy: User: test uses token AUTH_tkb689f37b441f4d9484a2790fd512ef5d (trans_id tx2d22defe986949fd86948-0052ffd50e)
+Feb 15 20:58:54 saio container-server: 127.0.0.1 - - [15/Feb/2014:20:58:54 +0000] "HEAD /d2/304/AUTH_test/c" 204 - "tx2d22defe986949fd86948-0052ffd50e" "HEAD http://saio:8080/v1/AUTH_test/c" "proxy-server 3249" 0.0013
+Feb 15 20:58:54 saio swift_proxy: - - 15/Feb/2014/20/58/54 HEAD /v1/AUTH_test/c HTTP/1.0 204 - Swift - - - - tx2d22defe986949fd86948-0052ffd50e - 0.0045 CQ - 1392497934.649473906 1392497934.654006004
+Feb 15 20:58:54 saio swift_proxy: User test:tester has admin authorizing. (txn: tx2d22defe986949fd86948-0052ffd50e) (client_ip: 192.168.56.1)
+Feb 15 20:58:54 saio container-server: 127.0.0.1 - - [15/Feb/2014:20:58:54 +0000] "PUT /d2/304/AUTH_test/c/o" 201 - "tx2d22defe986949fd86948-0052ffd50e" "PUT http://saio:8080/d3/730/AUTH_test/c/o" "obj-server 3250" 0.0005
+Feb 15 20:58:54 saio container-server: 127.0.0.1 - - [15/Feb/2014:20:58:54 +0000] "PUT /d1/304/AUTH_test/c/o" 201 - "tx2d22defe986949fd86948-0052ffd50e" "PUT http://saio:8080/d4/730/AUTH_test/c/o" "obj-server 3256" 0.0009
+Feb 15 20:58:54 saio object-server: 127.0.0.1 - - [15/Feb/2014:20:58:54 +0000] "PUT /d3/730/AUTH_test/c/o" 201 - "PUT http://saio:8080/v1/AUTH_test/c/o" "tx2d22defe986949fd86948-0052ffd50e" "proxy-server 3249" 0.0497
+Feb 15 20:58:54 saio object-server: 127.0.0.1 - - [15/Feb/2014:20:58:54 +0000] "PUT /d4/730/AUTH_test/c/o" 201 - "PUT http://saio:8080/v1/AUTH_test/c/o" "tx2d22defe986949fd86948-0052ffd50e" "proxy-server 3249" 0.0559
+Feb 15 20:58:54 saio container-server: 127.0.0.1 - - [15/Feb/2014:20:58:54 +0000] "PUT /d3/304/AUTH_test/c/o" 201 - "tx2d22defe986949fd86948-0052ffd50e" "PUT http://saio:8080/d1/730/AUTH_test/c/o" "obj-server 3254" 0.0009
+Feb 15 20:58:54 saio object-server: 127.0.0.1 - - [15/Feb/2014:20:58:54 +0000] "PUT /d1/730/AUTH_test/c/o" 201 - "PUT http://saio:8080/v1/AUTH_test/c/o" "tx2d22defe986949fd86948-0052ffd50e" "proxy-server 3249" 0.0672
+Feb 15 20:58:54 saio swift_proxy: 192.168.56.1 192.168.56.1 15/Feb/2014/20/58/54 PUT /v1/AUTH_test/c/o HTTP/1.0 201 - curl/7.30.0 AUTH_tkb689f37b441f4d9484a2790fd512ef5d 4 - - tx2d22defe986949fd86948-0052ffd50e - 0.0762 - - 1392497934.654478073 1392497934.730686903
