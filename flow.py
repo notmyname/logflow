@@ -26,7 +26,7 @@ storage_log_pattern = r'''
 \s
 ".*?"  # txn id (object), referrer (account + container)
 \s
-"(.*?)\s\d*?"  # user agent
+"(.*?)\s(\d*?)"  # user agent
 \s
 .*?  # transaction time
 '''
@@ -51,12 +51,13 @@ servers_found = set()
 
 with open(filename, 'rb') as f:
     for line in f:
-        line = line.strip()[21:]
+        line = line.strip()[16:]  # pull off syslog timestamp
+        server_name, line = line.split(' ', 1)
         server_type, line = line.split(': ', 1)
         server_type = st_map.get(server_type.strip(), server_type.strip())
         m = storage_log_regex.match(line)
         if m:
-            (method, status, source, ) = m.groups()
+            (method, status, source, source_pid ) = m.groups()
             source = st_map.get(source, source)
             g.add_edge(source, server_type, label='%s (%s)' % (method, status))
         else:
