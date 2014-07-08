@@ -69,7 +69,7 @@ def _add_edge(s1, s2, label=''):
 def _write_edges():
     for edge in edge_tracker.values():
         (src, target, label), count = edge
-        label = "%s [%d]" % (label, count) if label else "[%d]" % (count)
+        label = "%dx %s" % (count, label) if label else "%dx" % (count)
         g.add_edge(src, target, label=label, weight=count)
 
 with open(filename, 'rb') as f:
