@@ -1,19 +1,20 @@
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "HEAD /d1/597/AUTH_test" 404 - "tx2e534b49ac2b4c7086236-0052ffd4da" "HEAD http://saio:8080/v1/AUTH_test" "proxy-server 3249" 0.0003 ""
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "HEAD /d3/597/AUTH_test" 404 - "tx2e534b49ac2b4c7086236-0052ffd4da" "HEAD http://saio:8080/v1/AUTH_test" "proxy-server 3249" 0.0003 ""
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "HEAD /d2/597/AUTH_test" 404 - "tx2e534b49ac2b4c7086236-0052ffd4da" "HEAD http://saio:8080/v1/AUTH_test" "proxy-server 3249" 0.0003 ""
-Feb 15 20:58:02 saio swift_proxy: Handoff requested (1) (txn: tx2e534b49ac2b4c7086236-0052ffd4da)
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "HEAD /d4/597/AUTH_test" 404 - "tx2e534b49ac2b4c7086236-0052ffd4da" "HEAD http://saio:8080/v1/AUTH_test" "proxy-server 3249" 0.0003 ""
-Feb 15 20:58:02 saio swift_proxy: - - 15/Feb/2014/20/58/02 HEAD /v1/AUTH_test HTTP/1.0 204 - Swift - - - - tx2e534b49ac2b4c7086236-0052ffd4da - 0.0092 GET_INFO - 1392497882.088356018 1392497882.097556114
-Feb 15 20:58:02 saio swift_proxy: User: test uses token AUTH_tkb689f37b441f4d9484a2790fd512ef5d (trans_id tx2e534b49ac2b4c7086236-0052ffd4da)
-Feb 15 20:58:02 saio swift_proxy: User test:tester has admin authorizing. (txn: tx2e534b49ac2b4c7086236-0052ffd4da) (client_ip: 192.168.56.1)
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d3/597/AUTH_test" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "-" "-" 0.0238 ""
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d1/597/AUTH_test" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "-" "-" 0.0244 ""
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d2/597/AUTH_test" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "-" "-" 0.0300 ""
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "HEAD /d3/597/AUTH_test" 204 - "tx2e534b49ac2b4c7086236-0052ffd4da" "HEAD http://saio:8080/v1/AUTH_test" "proxy-server 3249" 0.0015 ""
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d3/597/AUTH_test/c" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "PUT http://127.0.0.1:6011/d1/304/AUTH_test/c" "container-server 3248" 0.0017 ""
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d1/597/AUTH_test/c" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "PUT http://127.0.0.1:6021/d2/304/AUTH_test/c" "container-server 3251" 0.0051 ""
-Feb 15 20:58:02 saio container-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d2/304/AUTH_test/c" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "PUT http://saio:8080/v1/AUTH_test/c" "proxy-server 3249" 0.0433
-Feb 15 20:58:02 saio container-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d1/304/AUTH_test/c" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "PUT http://saio:8080/v1/AUTH_test/c" "proxy-server 3249" 0.0462
-Feb 15 20:58:02 saio account-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d2/597/AUTH_test/c" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "PUT http://127.0.0.1:6031/d3/304/AUTH_test/c" "container-server 3257" 0.0019 ""
-Feb 15 20:58:02 saio container-server: 127.0.0.1 - - [15/Feb/2014:20:58:02 +0000] "PUT /d3/304/AUTH_test/c" 201 - "tx2e534b49ac2b4c7086236-0052ffd4da" "PUT http://saio:8080/v1/AUTH_test/c" "proxy-server 3249" 0.0528
-Feb 15 20:58:02 saio swift_proxy: 192.168.56.1 192.168.56.1 15/Feb/2014/20/58/02 PUT /v1/AUTH_test/c HTTP/1.0 201 - curl/7.30.0 AUTH_tkb689f37b441f4d9484a2790fd512ef5d - - - tx2e534b49ac2b4c7086236-0052ffd4da - 0.1011 - - 1392497882.098547935 1392497882.199641943
+Jul  8 03:01:25 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:25 +0000] "HEAD /d2/710/AUTH_test" 404 - "HEAD http://saio:8080/v1/AUTH_test" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0003 "-" 1568
+Jul  8 03:01:25 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:25 +0000] "HEAD /d1/710/AUTH_test" 404 - "HEAD http://saio:8080/v1/AUTH_test" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0002 "-" 1562
+Jul  8 03:01:25 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:25 +0000] "HEAD /d3/710/AUTH_test" 404 - "HEAD http://saio:8080/v1/AUTH_test" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0003 "-" 1560
+Jul  8 03:01:25 saio swift_proxy: Handoff requested (1) (txn: txeb3ab30b492342819b515-0053bb5f05)
+Jul  8 03:01:25 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:25 +0000] "HEAD /d4/710/AUTH_test" 404 - "HEAD http://saio:8080/v1/AUTH_test" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0003 "-" 1565
+Jul  8 03:01:25 saio swift_proxy: - - 08/Jul/2014/03/01/25 HEAD /v1/AUTH_test HTTP/1.0 204 - Swift - - - - txeb3ab30b492342819b515-0053bb5f05 - 0.0517 GET_INFO - 1404788485.861881018 1404788485.913628101
+Jul  8 03:01:25 saio swift_proxy: User: test uses token AUTH_tkb0bd609d7ab8423e951784f70b4e6208 (trans_id txeb3ab30b492342819b515-0053bb5f05)
+Jul  8 03:01:25 saio swift_proxy: User test:tester has admin authorizing. (txn: txeb3ab30b492342819b515-0053bb5f05) (client_ip: 192.168.56.1)
+Jul  8 03:01:25 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:25 +0000] "PUT /d3/710/AUTH_test" 201 - "-" "txeb3ab30b492342819b515-0053bb5f05" "-" 0.0320 "-" 1560
+Jul  8 03:01:25 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:25 +0000] "PUT /d2/710/AUTH_test" 201 - "-" "txeb3ab30b492342819b515-0053bb5f05" "-" 0.0365 "-" 1568
+Jul  8 03:01:25 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:25 +0000] "PUT /d1/710/AUTH_test" 201 - "-" "txeb3ab30b492342819b515-0053bb5f05" "-" 0.0388 "-" 1562
+Jul  8 03:01:26 saio swift_proxy: autocreate account '/AUTH_test'
+Jul  8 03:01:26 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:26 +0000] "HEAD /d2/710/AUTH_test" 204 - "HEAD http://saio:8080/v1/AUTH_test" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0017 "-" 1568
+Jul  8 03:01:26 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:26 +0000] "PUT /d1/710/AUTH_test/c" 201 - "PUT http://127.0.0.1:6021/d2/109/AUTH_test/c" "txeb3ab30b492342819b515-0053bb5f05" "container-server 1566" 0.0032 "-" 1562
+Jul  8 03:01:26 saio container-server: 127.0.0.1 - - [08/Jul/2014:03:01:26 +0000] "PUT /d2/109/AUTH_test/c" 201 - "PUT http://saio:8080/v1/AUTH_test/c" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0559 "-" 1566
+Jul  8 03:01:26 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:26 +0000] "PUT /d2/710/AUTH_test/c" 201 - "PUT http://127.0.0.1:6011/d1/109/AUTH_test/c" "txeb3ab30b492342819b515-0053bb5f05" "container-server 1564" 0.0020 "-" 1568
+Jul  8 03:01:26 saio container-server: 127.0.0.1 - - [08/Jul/2014:03:01:26 +0000] "PUT /d1/109/AUTH_test/c" 201 - "PUT http://saio:8080/v1/AUTH_test/c" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0590 "-" 1564
+Jul  8 03:01:26 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:01:26 +0000] "PUT /d3/710/AUTH_test/c" 201 - "PUT http://127.0.0.1:6031/d3/109/AUTH_test/c" "txeb3ab30b492342819b515-0053bb5f05" "container-server 1567" 0.0090 "-" 1560
+Jul  8 03:01:26 saio container-server: 127.0.0.1 - - [08/Jul/2014:03:01:26 +0000] "PUT /d3/109/AUTH_test/c" 201 - "PUT http://saio:8080/v1/AUTH_test/c" "txeb3ab30b492342819b515-0053bb5f05" "proxy-server 1569" 0.0614 "-" 1567
+Jul  8 03:01:26 saio swift_proxy: 192.168.56.1 192.168.56.1 08/Jul/2014/03/01/26 PUT /v1/AUTH_test/c HTTP/1.0 201 - curl/7.30.0 AUTH_tkb0bd609d7... - - - txeb3ab30b492342819b515-0053bb5f05 - 0.3125 - - 1404788485.857307911 1404788486.169833899

@@ -1,8 +1,8 @@
-Feb 17 05:11:52 saio swift_proxy: User: test uses token AUTH_tk055f541e2e464aeabd72aeb71792f9a5 (trans_id txf0007164120f465b9fd60-0053019a18)
-Feb 17 05:11:52 saio swift_proxy: User test:tester has admin authorizing. (txn: txf0007164120f465b9fd60-0053019a18) (client_ip: 192.168.56.1)
-Feb 17 05:11:52 saio account-server: 127.0.0.1 - - [17/Feb/2014:05:11:52 +0000] "GET /d1/597/AUTH_test" 404 - "txf0007164120f465b9fd60-0053019a18" "GET http://saio:8080/v1/AUTH_test/" "proxy-server 1574" 0.0012 ""
-Feb 17 05:11:52 saio account-server: 127.0.0.1 - - [17/Feb/2014:05:11:52 +0000] "GET /d3/597/AUTH_test" 404 - "txf0007164120f465b9fd60-0053019a18" "GET http://saio:8080/v1/AUTH_test/" "proxy-server 1574" 0.0012 ""
-Feb 17 05:11:52 saio account-server: 127.0.0.1 - - [17/Feb/2014:05:11:52 +0000] "GET /d2/597/AUTH_test" 404 - "txf0007164120f465b9fd60-0053019a18" "GET http://saio:8080/v1/AUTH_test/" "proxy-server 1574" 0.0011 ""
-Feb 17 05:11:52 saio swift_proxy: Handoff requested (1) (txn: txf0007164120f465b9fd60-0053019a18) (client_ip: 192.168.56.1)
-Feb 17 05:11:52 saio account-server: 127.0.0.1 - - [17/Feb/2014:05:11:52 +0000] "GET /d4/597/AUTH_test" 404 - "txf0007164120f465b9fd60-0053019a18" "GET http://saio:8080/v1/AUTH_test/" "proxy-server 1574" 0.0011 ""
-Feb 17 05:11:52 saio swift_proxy: 192.168.56.1 192.168.56.1 17/Feb/2014/05/11/52 GET /v1/AUTH_test/ HTTP/1.0 204 - curl/7.30.0 AUTH_tk055f541e2e464aeabd72aeb71792f9a5 - - - txf0007164120f465b9fd60-0053019a18 - 0.0150 - - 1392613912.425194979 1392613912.440146923
+Jul  8 03:00:34 saio swift_proxy: User: test uses token AUTH_tkb0bd609d7ab8423e951784f70b4e6208 (trans_id tx543e426000a4495fa729a-0053bb5ed2)
+Jul  8 03:00:34 saio swift_proxy: User test:tester has admin authorizing. (txn: tx543e426000a4495fa729a-0053bb5ed2) (client_ip: 192.168.56.1)
+Jul  8 03:00:34 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:00:34 +0000] "GET /d2/710/AUTH_test" 404 - "GET http://saio:8080/v1/AUTH_test/" "tx543e426000a4495fa729a-0053bb5ed2" "proxy-server 1569" 0.0013 "-" 1568
+Jul  8 03:00:34 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:00:34 +0000] "GET /d3/710/AUTH_test" 404 - "GET http://saio:8080/v1/AUTH_test/" "tx543e426000a4495fa729a-0053bb5ed2" "proxy-server 1569" 0.0014 "-" 1560
+Jul  8 03:00:34 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:00:34 +0000] "GET /d1/710/AUTH_test" 404 - "GET http://saio:8080/v1/AUTH_test/" "tx543e426000a4495fa729a-0053bb5ed2" "proxy-server 1569" 0.0016 "-" 1562
+Jul  8 03:00:34 saio swift_proxy: Handoff requested (1) (txn: tx543e426000a4495fa729a-0053bb5ed2) (client_ip: 192.168.56.1)
+Jul  8 03:00:34 saio account-server: 127.0.0.1 - - [08/Jul/2014:03:00:34 +0000] "GET /d4/710/AUTH_test" 404 - "GET http://saio:8080/v1/AUTH_test/" "tx543e426000a4495fa729a-0053bb5ed2" "proxy-server 1569" 0.0039 "-" 1565
+Jul  8 03:00:34 saio swift_proxy: 192.168.56.1 192.168.56.1 08/Jul/2014/03/00/34 GET /v1/AUTH_test/ HTTP/1.0 204 - curl/7.30.0 AUTH_tkb0bd609d7... - - - tx543e426000a4495fa729a-0053bb5ed2 - 0.0865 - - 1404788434.555500984 1404788434.642050982

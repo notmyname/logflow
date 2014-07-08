@@ -1,4 +1,5 @@
-Feb 15 20:59:25 saio swift_proxy: User: test uses token AUTH_tkb689f37b441f4d9484a2790fd512ef5d (trans_id txc9f96432740c4189ac9e2-0052ffd52d)
-Feb 15 20:59:25 saio swift_proxy: User test:tester has admin authorizing. (txn: txc9f96432740c4189ac9e2-0052ffd52d) (client_ip: 192.168.56.1)
-Feb 15 20:59:25 saio object-server: 127.0.0.1 - - [15/Feb/2014:20:59:25 +0000] "GET /d4/730/AUTH_test/c/o" 200 4 "GET http://saio:8080/v1/AUTH_test/c/o" "txc9f96432740c4189ac9e2-0052ffd52d" "proxy-server 3249" 0.0013
-Feb 15 20:59:25 saio swift_proxy: 192.168.56.1 192.168.56.1 15/Feb/2014/20/59/25 GET /v1/AUTH_test/c/o HTTP/1.0 200 - curl/7.30.0 AUTH_tkb689f37b441f4d9484a2790fd512ef5d - 4 - txc9f96432740c4189ac9e2-0052ffd52d - 0.0051 - - 1392497965.637048960 1392497965.642149925
+Jul  8 03:02:15 saio swift_proxy: User: test uses token AUTH_tkb0bd609d7ab8423e951784f70b4e6208 (trans_id txe07c887005824550b1b33-0053bb5f37)
+Jul  8 03:02:15 saio swift_proxy: User test:tester has admin authorizing. (txn: txe07c887005824550b1b33-0053bb5f37) (client_ip: 192.168.56.1)
+Jul  8 03:02:15 saio object-server: 127.0.0.1 - - [08/Jul/2014:03:02:15 +0000] "GET /d4/995/AUTH_test/c/o" 200 4 "GET http://saio:8080/v1/AUTH_test/c/o" "txe07c887005824550b1b33-0053bb5f37" "proxy-server 1569" 0.0007 "-" 1559
+Jul  8 03:02:15 saio swift_proxy: removed response headers: [('X-Backend-Timestamp', '1404788515.75620')] (txn: txe07c887005824550b1b33-0053bb5f37) (client_ip: 192.168.56.1)
+Jul  8 03:02:15 saio swift_proxy: 192.168.56.1 192.168.56.1 08/Jul/2014/03/02/15 GET /v1/AUTH_test/c/o HTTP/1.0 200 - curl/7.30.0 AUTH_tkb0bd609d7... - 4 - txe07c887005824550b1b33-0053bb5f37 - 0.0370 - - 1404788535.265449047 1404788535.302460909

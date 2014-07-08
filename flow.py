@@ -22,13 +22,15 @@ storage_log_pattern = r'''
 \s
 .*?  # content length
 \s
-".*?"  # referrer (object), txn id (account + container)
+".*?"  # referrer
 \s
-".*?"  # txn id (object), referrer (account + container)
+".*?"  # txn id
 \s
 "(.*?)\s(\d*?)"  # user agent
 \s
 .*?  # transaction time
+\s
+(\d\d\d\d)  # server pid
 '''
 
 auth_pattern = r'''
@@ -50,15 +52,17 @@ g = pgv.AGraph(strict=False, directed=True)
 servers_found = set()
 
 with open(filename, 'rb') as f:
-    for line in f:
-        line = line.strip()[16:]  # pull off syslog timestamp
+    for rawline in f:
+        line = rawline.strip()[16:]  # pull off syslog timestamp
         server_name, line = line.split(' ', 1)
         server_type, line = line.split(': ', 1)
         server_type = st_map.get(server_type.strip(), server_type.strip())
         m = storage_log_regex.match(line)
         if m:
-            (method, status, source, source_pid ) = m.groups()
+            (method, status, source, source_pid, server_pid) = m.groups()
             source = st_map.get(source, source)
+            source = '%s %s' % (source, source_pid)
+            server_type = '%s %s' %(server_type, server_pid)
             g.add_edge(source, server_type, label='%s (%s)' % (method, status))
         else:
             m = auth_pattern_regex.match(line)
