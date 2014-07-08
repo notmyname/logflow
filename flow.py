@@ -51,6 +51,27 @@ st_map = {
 g = pgv.AGraph(strict=False, directed=True)
 servers_found = set()
 
+edge_tracker = dict()
+
+
+def _add_edge(s1, s2, label=''):
+    def to_edge_key(s1, s2, label=''):
+        return s1 + "_" + s2 + '_' + label
+
+    key = to_edge_key(s1, s2, label)
+
+    if key in edge_tracker:
+        edge_tracker[key][1] += 1
+    else:
+        edge_tracker[key] = [(s1, s2, label), 1]
+
+
+def _write_edges():
+    for edge in edge_tracker.values():
+        (src, target, label), count = edge
+        label = "%s [%d]" % (label, count) if label else "[%d]" % (count)
+        g.add_edge(src, target, label=label, weight=count)
+
 with open(filename, 'rb') as f:
     for rawline in f:
         line = rawline.strip()[16:]  # pull off syslog timestamp
@@ -62,13 +83,15 @@ with open(filename, 'rb') as f:
             (method, status, source, source_pid, server_pid) = m.groups()
             source = st_map.get(source, source)
             source = '%s %s' % (source, source_pid)
-            server_type = '%s %s' %(server_type, server_pid)
-            g.add_edge(source, server_type, label='%s (%s)' % (method, status))
+            server_type = '%s %s' % (server_type, server_pid)
+            _add_edge(source, server_type, '%s (%s)' %
+                      (method, status))
         else:
             m = auth_pattern_regex.match(line)
             if m:
-                g.add_edge('proxy-server', 'auth')
-                g.add_edge('auth', 'proxy-server')
+                _add_edge('proxy-server', 'auth')
+                _add_edge('auth', 'proxy-server')
 
+_write_edges()
 g.layout(prog='dot')
 g.draw('out.png')
