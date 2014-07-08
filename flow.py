@@ -53,24 +53,32 @@ servers_found = set()
 
 edge_tracker = dict()
 
+max_found_edge_weight = 0
+max_edge_weight = 5
 
-def _add_edge(s1, s2, label=''):
-    def to_edge_key(s1, s2, label=''):
-        return s1 + "_" + s2 + '_' + label
 
-    key = to_edge_key(s1, s2, label)
+def _add_edge(s1, s2, method, status):
+    global max_found_edge_weight
+    key = s1 + s2 + method + status
+    if method or status:
+        label = '%s (%s)' % (method, status)
+    else:
+        label = ''
 
     if key in edge_tracker:
-        edge_tracker[key][1] += 1
+        edge_tracker[key][2] += 1
     else:
-        edge_tracker[key] = [(s1, s2, label), 1]
+        edge_tracker[key] = [(s1, s2, method), label, 1]
+    max_found_edge_weight = max(edge_tracker[key][2], max_found_edge_weight)
 
 
 def _write_edges():
     for edge in edge_tracker.values():
-        (src, target, label), count = edge
+        (src, target, method), label, count = edge
         label = "%dx %s" % (count, label) if label else "%dx" % (count)
-        g.add_edge(src, target, label=label, weight=count)
+        edge_thickness = float(count) / max_found_edge_weight * max_edge_weight
+        g.add_edge(src, target, label=label, weight=count,
+                   penwidth=edge_thickness)
 
 with open(filename, 'rb') as f:
     for rawline in f:
@@ -83,14 +91,12 @@ with open(filename, 'rb') as f:
             (method, status, source, source_pid, server_pid) = m.groups()
             source = st_map.get(source, source)
             source = '%s %s' % (source, source_pid)
-            server_type = '%s %s' % (server_type, server_pid)
-            _add_edge(source, server_type, '%s (%s)' %
-                      (method, status))
+            dest = '%s %s' % (server_type, server_pid)
+            _add_edge(source, dest, method, status)
         else:
             m = auth_pattern_regex.match(line)
             if m:
-                _add_edge('proxy-server', 'auth')
-                _add_edge('auth', 'proxy-server')
+                _add_edge('proxy-server', 'auth', '', '')
 
 _write_edges()
 g.layout(prog='dot')
