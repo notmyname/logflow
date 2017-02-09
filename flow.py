@@ -30,7 +30,7 @@ storage_log_pattern = r'''
 \s
 .*?  # transaction time
 \s
-(\d\d\d\d)  # server pid
+(\d{1,5})  # server pid
 '''
 
 auth_pattern = r'''
