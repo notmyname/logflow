@@ -77,7 +77,9 @@ def _write_edges():
         edge_thickness = max(
             float(count) / max_found_edge_weight * max_edge_weight, 1.0
         )
-        g.add_edge(src, target, label=label, weight=count, penwidth=edge_thickness)
+        g.add_edge(
+            src, target, label=label, weight=count, penwidth=edge_thickness
+        )
 
 
 with open(filename, "rb") as f:
