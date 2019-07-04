@@ -46,7 +46,9 @@ auth_pattern_regex = re.compile(auth_pattern, re.VERBOSE | re.MULTILINE)
 
 st_map = {"obj-server": "object-server", "swift": "container-reconciler"}
 
-g = pgv.AGraph(strict=False, directed=True, overlap="false")
+g = pgv.AGraph(
+    strict=False, directed=True, overlap="scale", splines="true", sep=".25"
+)
 servers_found = set()
 
 edge_tracker = dict()
@@ -91,8 +93,8 @@ with open(filename, "rb") as f:
         m = storage_log_regex.match(line)
         if m:
             (method, status, source, source_pid, server_pid) = m.groups()
-            source_pid = ""
-            server_pid = ""
+            # source_pid = ""
+            # server_pid = ""
             source = st_map.get(source, source)
             source = "%s %s" % (source, source_pid)
             dest = "%s %s" % (server_type, server_pid)
@@ -103,5 +105,5 @@ with open(filename, "rb") as f:
                 _add_edge("proxy-server", "auth", "", "")
 
 _write_edges()
-g.layout(prog="dot")
+g.layout(prog="twopi")
 g.draw("out.png")
