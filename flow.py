@@ -41,6 +41,9 @@ uses\stoken\s
 \(trans_id .*?\)
 """
 
+use_server_type = True
+show_response_codes = False
+
 storage_log_regex = re.compile(storage_log_pattern, re.VERBOSE | re.MULTILINE)
 auth_pattern_regex = re.compile(auth_pattern, re.VERBOSE | re.MULTILINE)
 
@@ -59,9 +62,14 @@ max_edge_weight = 5
 
 def _add_edge(s1, s2, method, status):
     global max_found_edge_weight
+    if not show_response_codes:
+        status = ""
     key = s1 + s2 + method + status
     if method or status:
-        label = "%s (%s)" % (method, status)
+        if status:
+            label = "%s (%s)" % (method, status)
+        else:
+            label = method
     else:
         label = ""
 
@@ -93,8 +101,9 @@ with open(filename, "rb") as f:
         m = storage_log_regex.match(line)
         if m:
             (method, status, source, source_pid, server_pid) = m.groups()
-            # source_pid = ""
-            # server_pid = ""
+            if use_server_type:
+                source_pid = ""
+                server_pid = ""
             source = st_map.get(source, source)
             source = "%s %s" % (source, source_pid)
             dest = "%s %s" % (server_type, server_pid)
@@ -105,5 +114,8 @@ with open(filename, "rb") as f:
                 _add_edge("proxy-server", "auth", "", "")
 
 _write_edges()
-g.layout(prog="twopi")
+if use_server_type:
+    g.layout(prog="dot")
+else:
+    g.layout(prog="twopi")
 g.draw("out.png")
