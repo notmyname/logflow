@@ -2,14 +2,17 @@
 
 import re
 import sys
-
+import argparse
 import pygraphviz as pgv
 
-try:
-    filename = sys.argv[1]
-except IndexError:
-    print >>sys.stderr, "Usage: %s <filename>" % sys.argv[0]
-    sys.exit(1)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--use-server-type", default=False, action="store_true")
+parser.add_argument(
+    "--show-response-codes", default=False, action="store_true"
+)
+parser.add_argument("filename")
+args = parser.parse_args()
 
 storage_log_pattern = r"""
 .*?  # remote_addr
@@ -41,16 +44,21 @@ uses\stoken\s
 \(trans_id .*?\)
 """
 
-use_server_type = False
-show_response_codes = True
-
 storage_log_regex = re.compile(storage_log_pattern, re.VERBOSE | re.MULTILINE)
 auth_pattern_regex = re.compile(auth_pattern, re.VERBOSE | re.MULTILINE)
 
 st_map = {"obj-server": "object-server", "swift": "container-reconciler"}
 
 g = pgv.AGraph(
-    strict=False, directed=True, overlap="scale", splines="true", sep=".25"
+    strict=False,
+    directed=True,
+    overlap="prism",
+    overlap_shrink="true",
+    sep=".25",
+    splines="spline",
+    fontname="B612",
+    fontsize=12,
+    pack="true",
 )
 servers_found = set()
 
@@ -62,7 +70,7 @@ max_edge_weight = 5
 
 def _add_edge(s1, s2, method, status):
     global max_found_edge_weight
-    if not show_response_codes:
+    if not args.show_response_codes:
         status = ""
     key = s1 + s2 + method + status
     if method or status:
@@ -92,19 +100,18 @@ def _write_edges():
         )
 
 
-with open(filename, "rb") as f:
+with open(args.filename, "rb") as f:
     for rawline in f:
-        line = line.strip()
+        line = rawline.strip()[16:]  # pull off syslog timestamp
         if not line:
             continue
-        line = rawline.strip()[16:]  # pull off syslog timestamp
         server_name, line = line.split(" ", 1)
         server_type, line = line.split(": ", 1)
         server_type = st_map.get(server_type.strip(), server_type.strip())
         m = storage_log_regex.match(line)
         if m:
             (method, status, source, source_pid, server_pid) = m.groups()
-            if use_server_type:
+            if args.use_server_type:
                 source_pid = ""
                 server_pid = ""
             source = st_map.get(source, source)
@@ -117,8 +124,10 @@ with open(filename, "rb") as f:
                 _add_edge("proxy-server", "auth", "", "")
 
 _write_edges()
-if use_server_type:
-    g.layout(prog="dot")
+g.graph_attr["ratio"] = "0.618"
+if args.use_server_type:
+    prog = "fdp"
 else:
-    g.layout(prog="twopi")
-g.draw("out.png")
+    prog = "twopi"
+g.layout(prog=prog)
+g.draw("out.png", prog=prog)
