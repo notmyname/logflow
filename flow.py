@@ -94,6 +94,9 @@ def _write_edges():
 
 with open(filename, "rb") as f:
     for rawline in f:
+        line = line.strip()
+        if not line:
+            continue
         line = rawline.strip()[16:]  # pull off syslog timestamp
         server_name, line = line.split(" ", 1)
         server_type, line = line.split(": ", 1)
