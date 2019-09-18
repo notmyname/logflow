@@ -30,7 +30,7 @@ storage_log_pattern = r"""
 \s
 .*?  # transaction time
 \s
-(\d{1,5})  # server pid
+(\d{1,6})  # server pid
 """
 
 auth_pattern = r"""
@@ -41,8 +41,8 @@ uses\stoken\s
 \(trans_id .*?\)
 """
 
-use_server_type = True
-show_response_codes = False
+use_server_type = False
+show_response_codes = True
 
 storage_log_regex = re.compile(storage_log_pattern, re.VERBOSE | re.MULTILINE)
 auth_pattern_regex = re.compile(auth_pattern, re.VERBOSE | re.MULTILINE)
