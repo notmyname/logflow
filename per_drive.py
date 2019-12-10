@@ -4,7 +4,10 @@ from collections import defaultdict
 import re
 import sys
 
+from table_print import table_print
+
 per_drive = defaultdict(list)
+size_by_drive = defaultdict(int)
 
 storage_log_pattern = r"""
 .*?  # remote_addr
@@ -15,13 +18,13 @@ storage_log_pattern = r"""
 \s
 (\d\d\d)  # status int
 \s
-.*?  # content length
+(.*?)  # content length
 \s
 ".*?"  # referrer
 \s
 ".*?"  # txn id
 \s
-"(.*?)\s(\d*?)"  # user agent
+".*?"  # user agent
 \s
 (.*?)  # transaction time
 \s
@@ -48,8 +51,7 @@ with open(sys.argv[1], "r") as f:
                     method,
                     path,
                     status,
-                    source,
-                    source_pid,
+                    size,
                     trans_time,
                     server_pid,
                     policy,
@@ -57,9 +59,19 @@ with open(sys.argv[1], "r") as f:
                 path_parts = path.split("/")
                 drive = path_parts[1]
                 time_bucket = int(float(trans_time) * 100)
-                # print(time_bucket, trans_time)
                 time_bucket_str = "%05dms" % ((1 + time_bucket) * 100)
-                per_drive[(drive,)].append(line)
+                try:
+                    size = int(size)
+                except ValueError:
+                    size = 0
+                size_bucket = size // 2 ** 20
+                size_bucket_str = "%02d MiB" % (1 + size_bucket)
+                key = (drive,)
+                per_drive[key].append(line)
+                size_by_drive[key] += size
 
+table = []
+table.append(("Disk", "Ops Count"))
 for key in sorted(per_drive):
-    print(" ".join(key), len(per_drive[key]))
+    table.append((" ".join(key), len(per_drive[key])))
+print(table_print(table))
