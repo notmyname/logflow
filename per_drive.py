@@ -43,8 +43,11 @@ with open(sys.argv[1], "r") as f:
         if not line.strip():
             continue
         line = line[23:]
-        server_type, line = line.split(": ", 1)
-        if server_type == "object-server":
+        try:
+            server_type, line = line.split(": ", 1)
+        except ValueError:
+            continue
+        if server_type == "container-server":
             m = storage_log_regex.match(line)
             if m:
                 (
