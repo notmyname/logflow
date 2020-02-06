@@ -64,6 +64,8 @@ external_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 container_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 obj_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 
+error_timestamps = set()
+
 filename = sys.argv[1]
 
 with open(filename, "r") as f:
@@ -112,6 +114,11 @@ with open(filename, "r") as f:
                 ) = splitted
             except ValueError:
                 # not a proxy log line
+                if "ERROR with Container server" in line:
+                    ts = datetime.datetime.strptime(
+                        "2020 " + raw_line[:15], "%Y %b %d %H:%M:%S"
+                    )
+                    error_timestamps.add(ts - datetime.timedelta(seconds=20))
                 continue
 
             start_time = float(start_time)
@@ -184,6 +191,9 @@ for counter, label in (
         plotable_y.append(counter.buckets[k])
 
     ax.plot(plotable_x, plotable_y, label=label, linestyle="-", marker="None")
+
+for ts in error_timestamps:
+    plt.axvline(x=ts.timestamp(), color="#469bcf", linewidth=1)
 
 ax.xaxis.set_major_formatter(time_formatter)
 ax.legend(loc="best", fancybox=True)
