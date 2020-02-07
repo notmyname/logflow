@@ -121,8 +121,12 @@ with open(filename, "r") as f:
                     error_timestamps.add(ts - datetime.timedelta(seconds=20))
                 continue
 
-            start_time = float(start_time)
-            end_time = float(end_time)
+            try:
+                start_time = float(start_time)
+                end_time = float(end_time)
+            except ValueError:
+                print(line)
+                continue
             if source == "-":
                 # client request
                 external_counter.add(start_time, end_time)
@@ -130,6 +134,8 @@ with open(filename, "r") as f:
                 # internal request
                 internal_counter.add(start_time, end_time)
         elif server_type in ("container-server", "object-server"):
+            if "- -" not in line:
+                continue
             (datetime_first, datetime_end) = splitted[3:5]
             req_duration = splitted[-4]
             logged_time = datetime_first + " " + datetime_end
