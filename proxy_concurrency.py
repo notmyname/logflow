@@ -70,8 +70,8 @@ filename = sys.argv[1]
 
 with open(filename, "r") as f:
     for i, raw_line in enumerate(f):
-        print("\rLines processed: %d..." % i, end="", file=sys.stderr)
-        if i % 500:
+        if i % 50:
+            print("\rLines processed: %d..." % i, end="", file=sys.stderr)
             sys.stderr.flush()
         raw_line = raw_line.strip()
         if not raw_line or raw_line[0] == "#":
