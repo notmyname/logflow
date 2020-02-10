@@ -18,7 +18,7 @@ x, y = [], []
 colors = []
 with open(sys.argv[1], "r") as fp:
     for i, line in enumerate(fp):
-        if i % 50:
+        if not i % 50:
             print("\rLines processed: %d..." % i, end="", file=sys.stderr)
             sys.stderr.flush()
         line = line.split()

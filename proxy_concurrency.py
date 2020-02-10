@@ -70,7 +70,7 @@ filename = sys.argv[1]
 
 with open(filename, "r") as f:
     for i, raw_line in enumerate(f):
-        if i % 50:
+        if not i % 50:
             print("\rLines processed: %d..." % i, end="", file=sys.stderr)
             sys.stderr.flush()
         raw_line = raw_line.strip()
