@@ -85,7 +85,10 @@ with open(filename, "r") as f:
             continue
 
         server_type = server_type.strip()
-        server_name, server_type = server_type.split()
+        try:
+            server_name, server_type = server_type.split()
+        except ValueError:
+            continue
         parts = parts.strip()
         splitted = parts.split()
         if server_type == "proxy-server":
