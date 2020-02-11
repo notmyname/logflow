@@ -77,7 +77,7 @@ with open(filename, "r") as f:
         if not raw_line or raw_line[0] == "#":
             continue
 
-        line = raw_line[23:]  # filter off syslog timestamp
+        line = raw_line[16:]  # filter off syslog timestamp
 
         try:
             server_type, parts = line.split(":", 1)
@@ -85,6 +85,7 @@ with open(filename, "r") as f:
             continue
 
         server_type = server_type.strip()
+        server_name, server_type = server_type.split()
         parts = parts.strip()
         splitted = parts.split()
         if server_type == "proxy-server":
