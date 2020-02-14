@@ -6,6 +6,7 @@ import pprint
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
+import matplotlib.patches as mpatches
 
 
 @FuncFormatter
@@ -24,7 +25,7 @@ with open(sys.argv[1], "r") as fp:
         line = line.split()
         if len(line) < 26:
             continue
-        if line[4] != "proxy-server:":
+        if line[4] not in ("proxy-server:", "swift:"):
             continue
         if line[21] != "-":
             continue
@@ -50,6 +51,8 @@ with open(sys.argv[1], "r") as fp:
         x.append(request_start)
         y.append(request_time)
 
+print("\nDone", file=sys.stderr)
+
 
 mpl.rcParams.update(mpl.rcParamsDefault)
 fig, ax = plt.subplots(1, 1, figsize=(12, 4))
@@ -60,6 +63,13 @@ ax.xaxis.set_major_formatter(time_formatter)
 
 labels = ax.get_xticklabels()
 plt.setp(labels, rotation=45, horizontalalignment="right")
+
+unkown_patch = mpatches.Patch(color="#99C94548", label="??")
+acct_patch = mpatches.Patch(color="#52BCA348", label="Account")
+cont_patch = mpatches.Patch(color="#5D69B148", label="Container")
+obj_patch = mpatches.Patch(color="#E5860648", label="Object")
+
+plt.legend(handles=[acct_patch, cont_patch, obj_patch])
 
 plt.title("Request Latencies")
 
