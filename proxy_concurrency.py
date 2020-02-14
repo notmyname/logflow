@@ -64,11 +64,13 @@ external_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 container_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 obj_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 
+twenty_seconds = datetime.timedelta(seconds=20)
+
 error_timestamps = set()
 
 filename = sys.argv[1]
 
-with open(filename, "r") as f:
+with open(filename, "r", buffering=65536) as f:
     for i, raw_line in enumerate(f):
         if not i % 50:
             print("\rLines processed: %d..." % i, end="", file=sys.stderr)
@@ -91,7 +93,7 @@ with open(filename, "r") as f:
             continue
         parts = parts.strip()
         splitted = parts.split()
-        if server_type == "proxy-server":
+        if server_type in ("proxy-server", "swift"):
             try:
                 (
                     client_ip,
@@ -122,7 +124,7 @@ with open(filename, "r") as f:
                     ts = datetime.datetime.strptime(
                         "2020 " + raw_line[:15], "%Y %b %d %H:%M:%S"
                     )
-                    error_timestamps.add(ts - datetime.timedelta(seconds=20))
+                    error_timestamps.add(ts - twenty_seconds)
                 continue
 
             try:
