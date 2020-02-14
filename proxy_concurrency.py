@@ -59,6 +59,9 @@ storage_log_pattern = r"""
 storage_log_regex = re.compile(storage_log_pattern, re.VERBOSE | re.MULTILINE)
 
 
+error_line_pattern = r".*? proxy-server: ERROR with .*? server .*? re: Trying to GET .*?: (.*?)Timeout \((.*?)s\)"
+error_line_regex = re.compile(error_line_pattern, re.MULTILINE)
+
 internal_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 external_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
 container_counter = ConcurrencyCounter(TIME_BUCKET_SIZE)
@@ -119,19 +122,24 @@ with open(filename, "r", buffering=65536) as f:
                     policy_index,
                 ) = splitted
             except ValueError:
-                # not a proxy log line
-                if "ERROR with Container server" in line:
+                # not a proxy access log line
+                m = error_line_regex.match(line)
+                if m:
+                    timeout_type, timeout_amt = m.groups()
+                    if timeout_type == "Connection":
+                        continue
                     ts = datetime.datetime.strptime(
                         "2020 " + raw_line[:15], "%Y %b %d %H:%M:%S"
                     )
-                    error_timestamps.add(ts - twenty_seconds)
+                    error_timestamps.add(
+                        ts - datetime.timedelta(seconds=float(timeout_amt))
+                    )
                 continue
 
             try:
                 start_time = float(start_time)
                 end_time = float(end_time)
             except ValueError:
-                print(line)
                 continue
             if source == "-":
                 # client request
