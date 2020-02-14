@@ -37,17 +37,28 @@ storage_log_pattern = r"""
 
 storage_log_regex = re.compile(storage_log_pattern, re.VERBOSE | re.MULTILINE)
 
-with open(sys.argv[1], "r") as f:
-    for line in f:
-        line = line.strip()
-        if not line.strip():
+with open(sys.argv[1], "r") as fp:
+    for i, raw_line in enumerate(fp):
+        if not i % 50:
+            print("\rLines processed: %d..." % i, end="", file=sys.stderr)
+            sys.stderr.flush()
+        raw_line = raw_line.strip()
+        if not raw_line or raw_line[0] == "#":
             continue
-        line = line[23:]
+
+        line = raw_line[16:]  # filter off syslog timestamp
+
         try:
-            server_type, line = line.split(": ", 1)
+            server_type, parts = line.split(":", 1)
         except ValueError:
             continue
-        if server_type == "container-server":
+
+        server_type = server_type.strip()
+        try:
+            server_name, server_type = server_type.split()
+        except ValueError:
+            continue
+        if server_type == "object-server":
             m = storage_log_regex.match(line)
             if m:
                 (
@@ -72,6 +83,8 @@ with open(sys.argv[1], "r") as f:
                 key = (drive,)
                 per_drive[key].append(line)
                 size_by_drive[key] += size
+
+print("\nDone", file=sys.stderr)
 
 table = []
 table.append(("Disk", "Ops Count"))
