@@ -212,8 +212,8 @@ for counter, label in (
 
     ax.plot(plotable_x, plotable_y, label=label, linestyle="-", marker="None")
 
-for ts in error_timestamps:
-    plt.axvline(x=ts.timestamp(), color="#469bcf", linewidth=1)
+# for ts in error_timestamps:
+#     plt.axvline(x=ts.timestamp(), color="#469bcf", linewidth=1)
 
 ax.xaxis.set_major_formatter(time_formatter)
 ax.legend(loc="best", fancybox=True)
