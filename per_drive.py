@@ -2,11 +2,11 @@
 
 from collections import defaultdict
 import sys
-import dateutil
-import datetime
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
+import math
+import ciso8601
 
 
 color_palette = [
@@ -29,7 +29,7 @@ class ConcurrencyCounter(object):
 
     def add(self, start, end):
         start = int(start * self._mult)
-        end = int(end * self._mult)
+        end = int(math.ceil(end * self._mult))
         if end == start:
             end += 1
         for i in range(start, end, 1):
@@ -46,6 +46,23 @@ def time_formatter(x, pos):
     x *= TIME_BUCKET_SIZE
     dt = datetime.datetime.fromtimestamp(x)
     return dt.strftime("%H:%M:%S")
+
+
+month_name_to_number = [
+    None,
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+]
 
 
 with open(sys.argv[1], "rb", buffering=10 * 2 ** 20) as fp:
@@ -90,9 +107,15 @@ with open(sys.argv[1], "rb", buffering=10 * 2 ** 20) as fp:
             logged_time = datetime_first + " " + datetime_end
             logged_time = logged_time[1:-1]  # strip the []
 
-            end_timestamp = dateutil.parser.parse(
-                logged_time[:11] + " " + logged_time[12:]
-            ).timestamp()
+            # like "27/Feb/2020 20:43:38 +0000"
+            iso_date = [logged_time[7:11]]
+            month_num = "%02d" % month_name_to_number.index(logged_time[3:6])
+            iso_date.append(month_num)
+            iso_date.append(logged_time[0:2])
+            iso_date = "-".join(iso_date)
+            iso_date += " " + logged_time[12:20] + logged_time[21:]
+
+            end_timestamp = ciso8601.parse_datetime(iso_date).timestamp()
             start_time = end_timestamp - req_duration
 
             drive_counters[drive].add(start_time, end_timestamp)

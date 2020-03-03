@@ -4,11 +4,11 @@ import sys
 from collections import defaultdict
 import datetime
 import re
-import dateutil
-
+import math
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
+import ciso8601
 
 
 TIME_BUCKET_SIZE = 1.0
@@ -21,7 +21,7 @@ class ConcurrencyCounter(object):
 
     def add(self, start, end):
         start = int(start * self._mult)
-        end = int(end * self._mult)
+        end = int(math.ceil(end * self._mult))
         if end == start:
             end += 1
         for i in range(start, end, 1):
@@ -33,6 +33,23 @@ def time_formatter(x, pos):
     x *= TIME_BUCKET_SIZE
     dt = datetime.datetime.fromtimestamp(x)
     return dt.strftime("%H:%M:%S")
+
+
+month_name_to_number = [
+    None,
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+]
 
 
 storage_log_pattern = r"""
@@ -153,22 +170,22 @@ with open(filename, "r", buffering=65536) as f:
             if "- -" not in line:
                 continue
             (datetime_first, datetime_end) = splitted[3:5]
-            req_duration = splitted[-4]
+            req_duration = float(splitted[-4])
             logged_time = datetime_first + " " + datetime_end
             logged_time = logged_time[1:-1]  # strip the []
-            end_timestamp = dateutil.parser.parse(
-                logged_time[:11] + " " + logged_time[12:]
-            )
-            req_duration = datetime.timedelta(seconds=float(req_duration))
+            iso_date = [logged_time[7:11]]
+            month_num = "%02d" % month_name_to_number.index(logged_time[3:6])
+            iso_date.append(month_num)
+            iso_date.append(logged_time[0:2])
+            iso_date = "-".join(iso_date)
+            iso_date += " " + logged_time[12:20] + logged_time[21:]
+
+            end_timestamp = ciso8601.parse_datetime(iso_date).timestamp()
             start_time = end_timestamp - req_duration
             if server_type == "container-server":
-                container_counter.add(
-                    start_time.timestamp(), end_timestamp.timestamp()
-                )
+                container_counter.add(start_time, end_timestamp)
             elif server_type == "object-server":
-                obj_counter.add(
-                    start_time.timestamp(), end_timestamp.timestamp()
-                )
+                obj_counter.add(start_time, end_timestamp)
             # m = storage_log_regex.match(parts)
             # if m:
             #     (

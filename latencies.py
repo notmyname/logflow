@@ -86,6 +86,8 @@ t.append(("Max", "%.4f" % percentile_data[-1]))
 print(table_print.table_print(t))
 
 
+# latency scatter plot
+
 mpl.rcParams.update(mpl.rcParamsDefault)
 fig, ax = plt.subplots(1, 1, figsize=(12, 4))
 
@@ -133,7 +135,7 @@ class LatencyCounter(object):
 
     def add(self, start, end, val):
         start = int(start)
-        end = int(end)
+        end = int(math.ceil(end))
         if end == start:
             end += 1
         for i in range(start, end, 1):
