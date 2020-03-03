@@ -48,28 +48,28 @@ def time_formatter(x, pos):
     return dt.strftime("%H:%M:%S")
 
 
-with open(sys.argv[1], "r") as fp:
+with open(sys.argv[1], "rb", buffering=10 * 2 ** 20) as fp:
     for i, raw_line in enumerate(fp):
-        if not i % 50:
+        if not i % 500:
             print("\rLines processed: %d..." % i, end="", file=sys.stderr)
-            sys.stderr.flush()
+            # sys.stderr.flush()
         raw_line = raw_line.strip()
-        if not raw_line or raw_line[0] == "#":
+        if not raw_line or raw_line[0] == b"#":
             continue
 
-        # if i >= 50000:
+        # if i >= 500000:
         #     break
 
         # early filtering for faster processing
-        if "object-server" not in raw_line:
+        if b"object-server" not in raw_line:
             continue
-        if "- -" not in raw_line:
+        if b"- -" not in raw_line:
             continue
 
         line = raw_line[16:]  # filter off syslog timestamp
 
         try:
-            server_type, parts = line.split(":", 1)
+            server_type, parts = line.split(b":", 1)
         except ValueError:
             continue
 
@@ -78,25 +78,24 @@ with open(sys.argv[1], "r") as fp:
             server_name, server_type = server_type.split()
         except ValueError:
             continue
-        parts = parts.strip()
-        splitted = parts.split()
-        if server_type == "object-server":
-            (datetime_first, datetime_end) = splitted[3:5]
-            req_duration = splitted[-4]
-            logged_time = datetime_first + " " + datetime_end
-            logged_time = logged_time[1:-1]  # strip the []
-            end_timestamp = dateutil.parser.parse(
-                logged_time[:11] + " " + logged_time[12:]
-            )
-            req_duration = datetime.timedelta(seconds=float(req_duration))
-            start_time = end_timestamp - req_duration
+        if server_type == b"object-server":
+            parts = parts.strip().decode("ascii")
+            splitted = parts.split()
 
             path = splitted[6][:-1]  # take off the last " character
             drive = path.split("/")[1]
 
-            drive_counters[drive].add(
-                start_time.timestamp(), end_timestamp.timestamp()
-            )
+            req_duration = float(splitted[-4])
+            (datetime_first, datetime_end) = splitted[3:5]
+            logged_time = datetime_first + " " + datetime_end
+            logged_time = logged_time[1:-1]  # strip the []
+
+            end_timestamp = dateutil.parser.parse(
+                logged_time[:11] + " " + logged_time[12:]
+            ).timestamp()
+            start_time = end_timestamp - req_duration
+
+            drive_counters[drive].add(start_time, end_timestamp)
 
 print("\nDone", file=sys.stderr)
 
@@ -106,7 +105,8 @@ all_drives.sort()  # so subsequent runs have the same order
 print(len(all_drives))
 
 mpl.rcParams.update(mpl.rcParamsDefault)
-fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+fig_height = max(len(all_drives) * 2 / 96, 4)
+fig, ax = plt.subplots(1, 1, figsize=(12, fig_height))
 
 
 # find global min and max to know how to scale colors
@@ -135,8 +135,11 @@ for i, drive in enumerate(all_drives):
             - 1
         )
         color_vals.append(color_palette[color_index])
-    ax.scatter(plotable_x, [i * 2] * len(plotable_x), s=1, c=color_vals)
+    ax.scatter(
+        plotable_x, [i] * len(plotable_x), s=1, c=color_vals, marker=","
+    )
 
+ax.yaxis.set_visible(False)
 ax.xaxis.set_major_formatter(time_formatter)
 # ax.legend(loc="best", fancybox=True)
 
