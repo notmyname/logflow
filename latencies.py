@@ -132,11 +132,11 @@ class LatencyCounter(object):
         self.buckets = defaultdict(list)
 
     def add(self, start, end, val):
-        s = int(start)
-        e = int(end)
-        if e == s:
-            e += 1
-        for i in range(int(start), int(end), 1):
+        start = int(start)
+        end = int(end)
+        if end == start:
+            end += 1
+        for i in range(start, end, 1):
             self.buckets[i].append(val)
 
 
@@ -144,54 +144,54 @@ latency_over_time = LatencyCounter()
 for t, val in sorted_value_pairs:
     latency_over_time.add(t, t + val, val)
 
-
-mpl.rcParams.update(mpl.rcParamsDefault)
-fig, ax = plt.subplots(1, 1, figsize=(12, 4))
-
 time_buckets = list(latency_over_time.buckets.keys())
 time_buckets.sort()
-len_time_buckets = len(time_buckets)
 
-lookback_seconds = 120
 
-for p, name in p_measures:
-    plotable_x = []
-    plotable_y = []
-    for t in time_buckets[lookback_seconds:]:
-        t_start = t - lookback_seconds
-        all_timings = []
-        for t2 in range(t_start, t):
-            all_timings.extend(latency_over_time.buckets[t2])
-        all_timings.sort()
-        p_index = int(len(all_timings) * p)
+for lookback_seconds in (5, 10, 30, 60, 900):
+    mpl.rcParams.update(mpl.rcParamsDefault)
+    fig, ax = plt.subplots(1, 1, figsize=(12, 4))
 
-        plotable_x.append(t)
-        plotable_y.append(all_timings[p_index])
+    for p, name in p_measures:
+        plotable_x = []
+        plotable_y = []
+        for t in time_buckets[lookback_seconds:]:
+            t_start = t - lookback_seconds
+            all_timings = []
+            for t2 in range(t_start, t):
+                all_timings.extend(latency_over_time.buckets[t2])
+            all_timings.sort()
+            p_index = int(len(all_timings) * p)
 
-    ax.plot(
-        plotable_x,
-        plotable_y,
-        label=name,
-        linestyle="-",
-        marker="None",
-        alpha=0.4,
-    )
+            plotable_x.append(t)
+            plotable_y.append(all_timings[p_index])
 
-plt.title("Rolling Request Latencies, Every %d Seconds" % lookback_seconds)
+        ax.plot(
+            plotable_x,
+            plotable_y,
+            label=name,
+            linestyle="-",
+            marker="None",
+            alpha=0.4,
+        )
 
-ax.legend(loc="best", fancybox=True)
-ax.xaxis.set_major_formatter(time_formatter)
+    plt.title("Rolling Request Latencies, Every %d Seconds" % lookback_seconds)
 
-plt.tight_layout()
+    ax.legend(loc="best", fancybox=True)
+    ax.xaxis.set_major_formatter(time_formatter)
 
-plt.style.use("fivethirtyeight")
-mpl.rcParams["font.sans-serif"] = "B612"
-mpl.rcParams["font.family"] = "B612"
-mpl.rcParams["axes.labelsize"] = 10
-mpl.rcParams["xtick.labelsize"] = 8
-mpl.rcParams["ytick.labelsize"] = 8
-mpl.rcParams["text.color"] = "k"
+    plt.tight_layout()
 
-fig.savefig("rolling_request_latencies.png")
+    plt.style.use("fivethirtyeight")
+    mpl.rcParams["font.sans-serif"] = "B612"
+    mpl.rcParams["font.family"] = "B612"
+    mpl.rcParams["axes.labelsize"] = 10
+    mpl.rcParams["xtick.labelsize"] = 8
+    mpl.rcParams["ytick.labelsize"] = 8
+    mpl.rcParams["text.color"] = "k"
 
-print("Done with rolling_request_latencies.png")
+    outname = "rolling_request_latencies_%dsec.png" % lookback_seconds
+
+    fig.savefig(outname)
+
+    print(f"Done with {outname}")
