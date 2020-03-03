@@ -30,6 +30,8 @@ class ConcurrencyCounter(object):
     def add(self, start, end):
         start = int(start * self._mult)
         end = int(end * self._mult)
+        if end == start:
+            end += 1
         for i in range(start, end, 1):
             self.buckets[i] += 1
 
