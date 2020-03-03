@@ -35,7 +35,10 @@ with open(sys.argv[1], "r") as fp:
 
         rsyslog_host = line[3]
         method = line[8]
-        bytes_sent = 0 if line[16] == "-" else int(line[16])
+        if method != "GET":
+            # only process GET requests
+            continue
+        # bytes_sent = 0 if line[16] == "-" else int(line[16])
         request_time = float(line[20])
         request_start = float(line[23])
 
@@ -44,8 +47,9 @@ with open(sys.argv[1], "r") as fp:
             continue
         if not request_path.startswith("/v1/"):
             request_path = "/v1/FAKE_s3" + request_path
-        # if request_path.count("/") <= 3:
-        #     continue
+        if request_path.count("/") <= 3:
+            # only process objects
+            continue
         colors.append(
             {
                 1: "#99C94548",  # ???
@@ -121,38 +125,62 @@ print("Done with request_latencies.png")
 sorted_value_pairs = [(x[i], y[i]) for i in range(len(x))]
 sorted_value_pairs.sort()
 latency_rolling_data = defaultdict(list)
-samples_to_lookback = 1000
-for i in range(len(sorted_value_pairs)):
-    lookback = max(0, i - samples_to_lookback)
-    subslice = [q[1] for q in sorted_value_pairs[lookback:i]]
-    subslice.sort()
-    for p, name in p_measures:
-        pindex = int(math.ceil(len(subslice) * p))
-        p_xval = sorted_value_pairs[i][0]
-        try:
-            val = subslice[pindex]
-        except IndexError:
-            val = 0
-        latency_rolling_data[name].append((p_xval, val))
+
+
+class LatencyCounter(object):
+    def __init__(self):
+        self.buckets = defaultdict(list)
+
+    def add(self, start, end, val):
+        s = int(start)
+        e = int(end)
+        if e == s:
+            e += 1
+        for i in range(int(start), int(end), 1):
+            self.buckets[i].append(val)
+
+
+latency_over_time = LatencyCounter()
+for t, val in sorted_value_pairs:
+    latency_over_time.add(t, t + val, val)
 
 
 mpl.rcParams.update(mpl.rcParamsDefault)
 fig, ax = plt.subplots(1, 1, figsize=(12, 4))
 
-for name in latency_rolling_data:
-    latency_rolling_data[name].sort()
+time_buckets = list(latency_over_time.buckets.keys())
+time_buckets.sort()
+len_time_buckets = len(time_buckets)
+
+lookback_seconds = 120
+
+for p, name in p_measures:
+    plotable_x = []
+    plotable_y = []
+    for t in time_buckets[lookback_seconds:]:
+        t_start = t - lookback_seconds
+        all_timings = []
+        for t2 in range(t_start, t):
+            all_timings.extend(latency_over_time.buckets[t2])
+        all_timings.sort()
+        p_index = int(len(all_timings) * p)
+
+        plotable_x.append(t)
+        plotable_y.append(all_timings[p_index])
+
     ax.plot(
-        [x[0] for x in latency_rolling_data[name]],
-        [x[1] for x in latency_rolling_data[name]],
+        plotable_x,
+        plotable_y,
         label=name,
         linestyle="-",
-        marker=None,
+        marker="None",
         alpha=0.4,
     )
 
-plt.title("Rolling Request Latencies, Every %d Requests" % samples_to_lookback)
+plt.title("Rolling Request Latencies, Every %d Seconds" % lookback_seconds)
 
 ax.legend(loc="best", fancybox=True)
+ax.xaxis.set_major_formatter(time_formatter)
 
 plt.tight_layout()
 
